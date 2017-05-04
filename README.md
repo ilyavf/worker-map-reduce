@@ -13,7 +13,16 @@ WorkerMapReduce uses Task from `data.task` module and immutable list from `immut
 
 ## Example
 
-You need to create two modules that export a task: a mapper and a reducer. Then run:
+To see a demo load `demo/index.html` in browser and open the console. You will see something like:
+```
+[mapReduceWorker] starting...
+...
+Exec: took 1.52 seconds.
+Result: Object {url: "http://google.com", text: "htt //goog . m", rank: 4}
+```
+
+To try it your self you need to create two modules that export a task: a mapper and a reducer.
+Then create your app:
 ```js
 // Main MapReduce module:
 const mapReduce = require('worker-map-reduce/src/map-reduce')
