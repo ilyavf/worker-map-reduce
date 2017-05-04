@@ -30,10 +30,10 @@ const createWorkerPool = poolSize =>
   .traverse(Task.of, () => create(workerUrl))
 )
 
-// scheduleWorkersLinear :: String -> List a -> List Worker -> Task List b
-const scheduleWorkersLinear = (taskUrl, data) => workers =>
+// scheduleWorkersBucket :: String -> List a -> List Worker -> Task List b
+const scheduleWorkersBucket = (taskUrl, data) => workers =>
 (
-  // console.log(`scheduleWorkersLinear 111 (taskUrl=${taskUrl}, data.size=${data.size}, workers.size=${workers.size})`),
+  console.log(`scheduleWorkersBucket ( taskUrl=${taskUrl}, data.size=${data.size}, workers.size=${workers.size} )`),
   data.zip(workers)
   .traverse(Task.of, ([data, worker]) =>
     runTask(worker, taskUrl)(data)
@@ -50,9 +50,9 @@ const scheduleWorkersLinear = (taskUrl, data) => workers =>
 const scheduleWorkers = (taskUrl, list) => workers =>
 (
   // console.log(`scheduleWorkers for ${taskUrl} list=${list.size} workers=${workers.size}`),
-  scheduleWorkerBucket(
+  scheduleWorkersTillDone(
     List.empty,
-    scheduleWorkersLinear(taskUrl, list.take(workers.size))(workers),
+    scheduleWorkersBucket(taskUrl, list.take(workers.size))(workers),
     list.skip(workers.size),
     workers,
     taskUrl
@@ -62,16 +62,16 @@ const scheduleWorkers = (taskUrl, list) => workers =>
 /**
  * Stage 1: do M tasks, once done, do next M, etc.
  */
-// scheduleWorkerBucket :: List a -> Task List Worker -> Task List b -> List Worker -> String
-const scheduleWorkerBucket = (results, taskList, listLeft, workers, taskUrl) =>
+// scheduleWorkersTillDone :: List a -> Task List Worker -> Task List b -> List Worker -> String
+const scheduleWorkersTillDone = (results, taskList, listLeft, workers, taskUrl) =>
 (
-  console.log(`scheduleWorkerBucket: results.size=${results.size}, listLeft=${listLeft.size}, workers.size=${workers.size}, taskUrl=${taskUrl}`),
+  // console.log(`scheduleWorkersTillDone: results.size=${results.size}, listLeft=${listLeft.size}, workers.size=${workers.size}, taskUrl=${taskUrl}`),
   listLeft.size === 0
     ? taskList.map(a => results.concat(a))
     : taskList.chain(res =>
-        scheduleWorkerBucket(
+        scheduleWorkersTillDone(
           results.concat(res),
-          scheduleWorkersLinear(taskUrl, listLeft.take(workers.size))(workers),
+          scheduleWorkersBucket(taskUrl, listLeft.take(workers.size))(workers),
           listLeft.skip(workers.size),
           workers,
           taskUrl

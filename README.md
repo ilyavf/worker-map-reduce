@@ -4,10 +4,10 @@ MapReduce with Web Workers
 This is a MapReduce for a browser. Uses Web Workers to run tasks in parallel.
 
 Features (see Release Notes in the bottom):
-- Spawn limited number of workers (NOT YET)
-- Mapper and reducer tasks are sent to workers (REDUCER NOT YET)
-- Send a new task to a worker as soon as it gets free
-- Fault tolerance: if a worker fails with a runtime exception, its task will be resent (NOT YET)
+- Spawn limited number of workers.
+- Mapper and reducer tasks are sent to workers. (REDUCER NOT YET)
+- Send a new task to a worker as soon as it gets free. (ALMOST)
+- Fault tolerance: if a worker fails with a runtime exception, its task will be resent. (NOT YET)
 
 WorkerMapReduce uses Task from `data.task` module and immutable list from `immutable`.
 
@@ -69,6 +69,9 @@ const reducer = require('your-reducer-module')
 
 
 ## Release Notes
+- `0.0.2` Worker pool:
+  - Schedule tasks for all available workers.
+  - Once the whole pool of workers is done, schedule the next bunch of tasks.
 - `0.0.1` Initial version:
   - Send mapper tasks to workers, number of workers is the same as number of elements in data array.
   - Reducer task is executed inside the main app.
