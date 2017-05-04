@@ -9,8 +9,8 @@ const reduce = reducer => acc => list =>
     ? Task.of(acc)
     : reducer(acc)(list.first()).chain(a => reduce(reducer)(a)(list.shift()))
 
-// reduceAsync :: ReducerAsync b a -> Task List a -> Task b
-const reduceAsync = (reducer, listTask) =>
-  listTask.chain(reduce(reducer)(reducer.initialValue))
+// reduceAsync :: ReducerAsync b a -> List a -> Task b
+const reduceAsync = reducer => list =>
+  reduce(reducer)(reducer.initialValue)(list)
 
 module.exports = reduceAsync

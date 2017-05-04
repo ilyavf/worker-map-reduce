@@ -11,6 +11,6 @@ const mapperUrl = 'demo/mapper'
 
 const list = List(testData)
 
-const app = mapReduce(mapperUrl, reducer, list)
+const app = mapReduce(mapperUrl, reducer, list, 3)
 
 execTask(app)
