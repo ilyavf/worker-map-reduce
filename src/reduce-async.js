@@ -12,7 +12,7 @@ const reduce = reducer => acc => list =>
 // reduceAsync :: ReducerAsync b a -> Task List a -> Task b
 const reduceAsync = (reducer, listTask) =>
 (
-  console.log('[reduceAsync]'),
+  // console.log('[reduceAsync]'),
   listTask.chain(reduce(reducer)(reducer.initialValue))
 )
 

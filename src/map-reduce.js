@@ -10,14 +10,14 @@
  *    Reducer a b :: b -> a -> Task b
  *    Input a :: List a
  */
-const mapWorker = require('./map-worker')
+const mapWorkers = require('./map-worker')
 const reduceAsync = require('./reduce-async')
 
 // mapReduceWorker :: String -> Reducer -> Input
 const mapReduceWorker = (mapperUrl, reducer, list) =>
 (
   console.log('[mapReduceWorker] starting...'),
-  reduceAsync(reducer, mapWorker(list.size, mapperUrl, list))
+  reduceAsync(reducer, mapWorkers(2, mapperUrl, list))
 )
 
 module.exports = mapReduceWorker

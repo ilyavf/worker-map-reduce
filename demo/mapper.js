@@ -6,20 +6,15 @@ const simulateCalculation = require('worker-task-runner/src/utils/simulate-calc'
 // PageRank = Object { url:String, rank:Number }
 
 // fetchPage :: String -> Task Page
-const fetchPage = url =>
-  // Task.of({url, text: url.replace(/[plrc]./g, ' ')})
+const calcLength = url =>
   new Task((reject, resolve) => {
     simulateCalculation(1000);
     console.log('- resolving for ' + url);
-    resolve({url, text: url.replace(/[plrc]./g, ' ')})
+    resolve({url, rank: url.length})
   })
 
-// countWords :: Page -> Task PageRank
-const countWords = page => Task.of({url: page.url, text: page.text, rank: page.text.split(' ').length})
-
 // mapper :: a -> Task b
-const mapperPageRank = url =>
-  fetchPage(url)
-  .chain(countWords)
+const mapperUrlLength = url =>
+  calcLength(url)
 
-module.exports = mapperPageRank
+module.exports = mapperUrlLength
