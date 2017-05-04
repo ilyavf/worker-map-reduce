@@ -1,0 +1,24 @@
+{
+  "name": "worker-map-reduce",
+  "version": "0.0.1",
+  "description": "MapReduce with Web Workers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "standard",
+    "lint:fix": "standard --fix"
+  },
+  "repository": "https://github.com/ilyavf/worker-map-reduce.git",
+  "author": "Ilya Fadeev <fadeev.ilya@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "data.task": "^3.1.1",
+    "immutable": "^3.8.1",
+    "immutable-ext": "^1.0.8",
+    "worker-task-runner": "^0.0.1"
+  },
+  "devDependencies": {
+    "standard": "^10.0.2",
+    "steal": "^1.5.2"
+  }
+}
