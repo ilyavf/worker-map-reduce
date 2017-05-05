@@ -10,14 +10,19 @@
  *    Reducer a b :: b -> a -> Task b
  *    Input a :: List a
  */
+const { List } = require('immutable-ext')
 const mapWorkers = require('./map-worker')
 const reduceAsync = require('./reduce-async')
 
+// normalizeData :: Array a -> List a
+const normalizeData = data =>
+  List.isList(data) ? data : List(data)
+
 // mapReduceWorker :: String -> Reducer -> Input -> Number -> IO()
-const mapReduceWorker = (mapperUrl, reducer, list, workerPoolSize=2) =>
+const mapReduceWorker = (mapperUrl, reducer, data, workerPoolSize=2) =>
 (
-  console.log(`[mapReduceWorker] starting: list.size=${list.size}, workerPoolSize=${workerPoolSize}`),
-  reduceAsync(reducer, mapWorkers(workerPoolSize, mapperUrl, list))
+  console.log(`[mapReduceWorker] starting: list.size=${data.size}, workerPoolSize=${workerPoolSize}`),
+  reduceAsync(reducer, mapWorkers(workerPoolSize, mapperUrl, normalizeData(data)))
 )
 
 module.exports = mapReduceWorker
