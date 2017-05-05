@@ -11,7 +11,28 @@ Features (see Release Notes in the bottom):
 
 WorkerMapReduce uses Task from `data.task` module and immutable list from `immutable`.
 
-## Example
+On how to use `SharedArrayBuffer` to pass data to workers more effectively see `worker-task-runner` examples.
+Multiple workers can work with the same `SharedArrayBuffer` as long as they operate on different parts of the buffer.
+
+## Intro
+
+#### Two models of parallelism
+- Data parallelism (<<< current use case with parallelized mappers)
+  - the same task is executed several times in parallel on different elements of the same dataset.
+- Task parallelism
+  - different tasks are executed in parallel.
+
+#### Use cases
+- Small data, expensive calculation (<<< current use case with parallelized mappers)
+  - can pass data via `postMessage`
+- Large data, fast calculation
+  - no benefit to send data with `postMessage`
+    - consider retrieving data by the spawned process itself (e.g. from api)
+  - shared array buffer
+- Large data, slow calculation
+  - shared array buffer
+
+## Examples
 
 To see a demo load `demo/index.html` in browser and open the console. You will see something like:
 ```
