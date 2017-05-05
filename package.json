@@ -1,6 +1,6 @@
 {
   "name": "worker-map-reduce",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MapReduce with Web Workers",
   "main": "index.js",
   "scripts": {
