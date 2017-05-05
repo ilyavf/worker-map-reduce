@@ -11,16 +11,45 @@ Features (see Release Notes in the bottom):
 
 WorkerMapReduce uses Task from `data.task` module and immutable list from `immutable`.
 
-## Example
+On how to use `SharedArrayBuffer` to pass data to workers more effectively see demo `demo/array-max/` as well as
+`worker-task-runner` examples.
+Multiple workers can work with the same `SharedArrayBuffer` as long as they operate on different parts of the buffer.
 
-To see a demo load `demo/index.html` in browser and open the console. You will see something like:
+## Intro
+
+#### Two models of parallelism
+- Data parallelism  **<<< current use case with parallelized mappers**
+  - the same task is executed several times in parallel on different elements of the same dataset.
+- Task parallelism
+  - different tasks are executed in parallel.
+
+#### Use cases
+- Small data, expensive calculation   **<<< main demo**
+  - can pass data via `postMessage`
+- Large data, fast calculation
+  - no benefit to send data with `postMessage`
+    - consider retrieving data by the spawned process itself (e.g. from api)
+  - use `SharedArrayBuffer`
+- Large data, slow calculation   **<<< demo/array-max**
+  - use `SharedArrayBuffer`
+
+## Usage
+
+#### Main demo
+The task is:
+- given an array of strings
+- run an expensive calculation (is simulated) per string (with a provided mapper function)
+- and calculate a sum in the provided reducer.
+
+To see the demo load `demo/index.html` in browser and open the console. You will see something like:
 ```
-[mapReduceWorker] starting...
+[mapReduceWorker] starting: list.size=5, workerPoolSize=3
 ...
-Exec: took 1.52 seconds.
-Result: Object {url: "http://google.com", text: "htt //goog . m", rank: 4}
+Exec: took 2.243 seconds.
+Result: 73
 ```
 
+#### Example
 To try it your self you need to create two modules that export a task: a mapper and a reducer.
 Then create your app:
 ```js
@@ -34,19 +63,27 @@ const reducer = require('./reducer')
 // via a module loader (StealJS) into a worker:
 const mapperUrl = 'demo/mapper'
 
-// Immutable list of data (`immutable-ext` adds `traverse` method):
-const { List } = require('immutable-ext')
-
-// Data:
-const list = List([1, 2, 3])
+// Data array:
+const array = [1, 2, 3]
 
 // Main app:
-const app = mapReduce(mapperUrl, reducer, list)
+const app = mapReduce(mapperUrl, reducer, array)
 
 app.fork(err => console.log("Error: ", err),
          res => console.log("Result: ", res))
-
 ```
+
+#### Parallelizing a task for MapReduce
+
+The simplest example of applying MapReduce to an array of data so that a mapper is executed for every element.
+But this is not often the case.
+
+What you can do is:
+- Divide your data into chunks.
+- Run your mapper on every chunk of data in parallel.
+- Run your reducer on the results collected from mappers.
+
+See the following demo: `demo/array-max/`.
 
 ### Types and Signatures
 
